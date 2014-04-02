@@ -1,6 +1,6 @@
 {
-    "hosts" : [{
-    "host" : "mon-site.com",
+    "hosts": [{
+    "host" : "mon-site.com:2000",
     "lb" : "roundrobin",
     "workers" : [
         "10.66.1.2",

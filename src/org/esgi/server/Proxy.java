@@ -19,10 +19,8 @@ public class Proxy {
     Map<String, HostConfig> configs;
 
     public static void main(String args[]) {
-        //TODO parse json
-        ProxyConfig config = null;
-
-        new Proxy(2000, HostListFactory.getDumy("mon-site.com:2000", "127.0.0.1", 1234)).run();
+        //new Proxy(2000, HostListFactory.getDumy("mon-site.com:2000", "127.0.0.1", 1234)).run();
+        new Proxy(2000, HostListFactory.get(ProxyConfig.getParseConfigFile())).run();
     }
 
     public Proxy(int port, Map<String, HostConfig> configs) {
@@ -67,7 +65,7 @@ public class Proxy {
                     //HTTP server socket
                     Socket serverHttp = config.loadBalancer.getConnection();//new Socket("127.0.0.1", 1234);
 
-                    config.incomingModifier.modify((HasHeader)request);
+                    config.incomingModifier.modify((HasHeader) request);
                     serverHttp.getOutputStream().write(request.asString().getBytes());
 
                     ResponseHttpHandler response = HTTPPrepender.parseResponse(serverHttp.getInputStream(), clientConnection.getOutputStream());

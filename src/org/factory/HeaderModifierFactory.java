@@ -1,8 +1,11 @@
 package org.factory;
 
+import org.esgi.config.HeaderLine;
 import org.interfaces.IHeaderModifier;
+import org.utils.HeaderModifier;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,8 +16,13 @@ import java.util.HashMap;
  */
 public class HeaderModifierFactory {
 
-    public static IHeaderModifier get(HashMap<String, String> add, HashMap<String, String> remove)
+    public static IHeaderModifier get(HeaderLine headLine)
     {
-        return null;
+        HashMap<String, String> hashHeader = new HashMap<String, String>();
+        for(HashMap<String, String> hash : headLine.add)
+            for(Map.Entry<String, String> key : hash.entrySet())
+                hashHeader.put(key.getKey(), key.getValue());
+
+        return new HeaderModifier(hashHeader, null);
     }
 }

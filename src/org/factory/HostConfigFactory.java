@@ -14,9 +14,10 @@ public class HostConfigFactory
 {
     public static HostConfig get(Host host)
     {
-        String h = host.host;
-        HostConfig hc = new HostConfig();
-
-        return hc;
+       HostConfig hc = new HostConfig();
+       hc.loadBalancer = LoadBalancerFactory.get(host.lb, host.workers);
+       hc.incomingModifier = HeaderModifierFactory.get(host.headers.incoming);
+       hc.incomingModifier = HeaderModifierFactory.get(host.headers.outgoing);
+       return hc;
     }
 }

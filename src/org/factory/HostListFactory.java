@@ -19,6 +19,7 @@ import java.util.Map;
 public class HostListFactory
 {
     private static HashMap<String, HostConfig> configMap;
+
     public static Map<String, HostConfig> get(ProxyConfig config)
     {
         System.out.println(config.toString());

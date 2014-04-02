@@ -10,10 +10,11 @@ public class ProxyConfig {
 	public List<Host> hosts;
 	@Override
 	public String toString() {
-		return "ProxyConfig [hosts=" + hosts + "]";
+
+        return "ProxyConfig [hosts=" + hosts + "]";
 	}
 
-    public ProxyConfig getParseConfigFile()
+    public static ProxyConfig getParseConfigFile()
     {
         ObjectMapper mapper = new ObjectMapper();
         ProxyConfig config = null;
