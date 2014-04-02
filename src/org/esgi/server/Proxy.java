@@ -60,9 +60,14 @@ public class Proxy {
 
                     ResponseHttpHandler response = HTTPPrepender.parseResponse(serverHttp.getInputStream(), clientConnection.getOutputStream());
 
-                    System.out.println("Response : ");
-                    response.getWriter().write(response.getContent());
+                    response.removeHeader("Content-Description");
+                    response.removeHeader("Content-Disposition");
+
+                    System.out.println("---------ProxResponse----------");
+                    response.getWriter().write(new char[0]);
+                    response.getOutputStream().write(response.getContent());
                     response.getWriter().flush();
+                    System.out.println("-------------------------------");
 
 
                     //TODO add.remove headers

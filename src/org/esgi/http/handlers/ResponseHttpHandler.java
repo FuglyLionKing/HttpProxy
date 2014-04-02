@@ -30,7 +30,7 @@ public class ResponseHttpHandler implements IResponseHttpHandler {
 
     private String contentType;
 
-    private String content;
+    private byte[]  content;
     private String version;
 
 
@@ -93,11 +93,11 @@ public class ResponseHttpHandler implements IResponseHttpHandler {
         //this.length = lenght;
     }
 
-    public String getContent() {
+    public byte[]  getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(byte[] content) {
         this.content = content;
     }
 
@@ -107,6 +107,10 @@ public class ResponseHttpHandler implements IResponseHttpHandler {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public void removeHeader(String key){
+        headers.remove(key);
     }
 
     //

@@ -163,4 +163,8 @@ public class HttpRequestHandler implements IRequestHttpHandler {
         return builder.toString();
     }
 
+    public void removeHeader(String key){
+        headers.remove(key);
+    }
+
 }

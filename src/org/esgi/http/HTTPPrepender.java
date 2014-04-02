@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,43 +21,125 @@ import java.util.HashMap;
  */
 public class HTTPPrepender {
 
+    private static class Request {
+        String header;
+        byte[] content;
 
-    private static String httpReader(InputStream stream) throws IOException {
-        StringBuilder builder = new StringBuilder();
-        InputStreamReader reader = new InputStreamReader(stream);
-        int bufferSize = 1024;
-        char[] buffer = new char[bufferSize];
-        String requestEnd = "\r\n\r\n";
+        private Request(String header, byte[] content) {
+            this.header = header;
+            this.content = content;
+        }
+    }
 
-        int b;
-        while (0 < (b = reader.read(buffer))) {
-            builder.append(buffer, 0, b);
-            String bufferEnd = builder.substring(builder.length() - 4, builder.length());
-            if (requestEnd.equals(bufferEnd))
-                break;
+    private static byte[] unbox(List<Byte> list) {
+        byte[] ans = new byte[list.size()];
+        int i = 0;
+        for (Byte b : list) {
+            ans[i++] = b.byteValue();
         }
 
-        System.out.println("*********Received********");
-        System.out.println(builder.toString());
-        System.out.println("**** End of received *****");
-
-        return builder.toString();
+        return ans;
     }
+
+    private static byte[] readContent(InputStream stream, String stopOn) throws IOException {
+        byte[] pending = new byte[stopOn.length()];
+        int i;
+        int stopIndex = 0;
+
+        ArrayList<Byte> bytes = new ArrayList<Byte>();
+
+        while (-1 != (i = stream.read())) {
+            //if it may be the stop, don't add it to the header's byte and add to pending bytes
+            if (stopOn.charAt(stopIndex) == (char) i) {
+                pending[stopIndex] = (byte) i;
+                stopIndex++;
+
+                if (stopIndex == stopOn.length())
+                    break;
+                else
+                    continue;
+            } else if (0 != stopIndex) {
+                //put back in the headers the pending bytes if it was a false alert
+                for (int j = 0; j < stopIndex; j++) {
+                    bytes.add(pending[j]);
+                }
+                stopIndex = 0;
+            }
+
+            bytes.add((byte) i);
+        }
+
+        return unbox(bytes);
+    }
+
+    private static String readHeader(InputStream stream, String stopOn) throws IOException {
+        byte[] pending = new byte[stopOn.length()];
+        int i;
+        int stopIndex = 0;
+
+        ArrayList<Byte> bytes = new ArrayList<Byte>();
+
+        while (-1 != (i = stream.read())) {
+            //if it may be the stop, don't add it to the header's byte and add to pending bytes
+            if (stopOn.charAt(stopIndex) == (char) i) {
+                pending[stopIndex] = (byte) i;
+                stopIndex++;
+                if (stopIndex == stopOn.length())
+                    break;
+                else
+                    continue;
+            } else if (0 != stopIndex) {
+                //put back in the headers the pending bytes if it was a false alert
+                for (int j = 0; j < stopIndex; j++) {
+                    bytes.add(pending[j]);
+                }
+                stopIndex = 0;
+            }
+
+            bytes.add((byte) i);
+        }
+
+        return new String(unbox(bytes));
+    }
+
+
+//    private static String Request(InputStream stream) throws IOException {
+//        StringBuilder builder = new StringBuilder();
+//        InputStreamReader reader = new InputStreamReader(stream);
+//        int bufferSize = 1024;
+//        char[] buffer = new char[bufferSize];
+//        String requestEnd = "\r\n\r\n";
+//
+//        int b;
+//        while (0 < (b = reader.read(buffer))) {
+//            builder.append(buffer, 0, b);
+//            String bufferEnd = builder.substring(builder.length() - 4, builder.length());
+//            if (requestEnd.equals(bufferEnd))
+//                break;
+//        }
+//
+//        System.out.println("*********Received********");
+//        System.out.println(builder.toString());
+//        System.out.println("**** End of received *****");
+//
+//        return builder.toString();
+//    }
 
     public static HttpRequestHandler parseRequest(InputStream stream, String remoteAdr) throws IOException {
 
-        String request = httpReader(stream);
+        String header = readHeader(stream, "\r\n\r\n");
 
-        return isValidRequest(request) ? new HttpRequestHandler(request, remoteAdr, null) : null;
+        return isValidRequest(header) ? new HttpRequestHandler(header, remoteAdr, null) : null;
 
     }
 
     public static ResponseHttpHandler parseResponse(InputStream stream, OutputStream out) throws IOException {
-        String response = httpReader(stream);
+        String header = readHeader(stream, "\r\n\r\n");
+        byte[] content = readContent(stream, "\r\n\r\n");
 
         ResponseHttpHandler handler = new ResponseHttpHandler(out);
 
-        String content = fillHeaderReturnContent(response,handler);
+        fillHeader(header, handler);
 
         handler.setContent(content);
 
@@ -63,7 +148,7 @@ public class HTTPPrepender {
     }
 
 
-    public static String fillHeaderReturnContent(String unParsedResponse, ResponseHttpHandler emptyResponse){
+    public static void fillHeader(String unParsedResponse, ResponseHttpHandler emptyResponse) {
         String[] lines = unParsedResponse.split("\r\n");
 
         String[] firstLine = lines[0].split(" ");
@@ -82,14 +167,6 @@ public class HTTPPrepender {
             emptyResponse.addHeader(nameValue[0], nameValue[1]);
         }
 
-        StringBuilder content = new StringBuilder();
-
-        for(; i < lines.length; i++){
-            content.append(lines[i]);
-            content.append("\r\n");
-        }
-
-        return content.toString();
     }
 
     private static boolean isValidRequest(String request) {
