@@ -42,32 +42,7 @@ public class Proxy {
                     //HTTP server socket
                     final Socket serverHttp = roundRobiner.getConnection();//new Socket("127.0.0.1", 1234);
 
-                    MyCallBack call = new MyCallBack() {
-                        @Override
-                        public boolean execute()
-                        {
-                            try
-                            {
-                                if(serverHttp.isClosed()){
-                                    proxyConnection.close();
-                                    return false;
-                                }
-                            }
-                            catch (IOException e)
-                            {
-                                e.printStackTrace();
-                                return false;
-                            }
 
-                            return true;
-                        }
-                    };
-
-                    StreamRedirecter proxyThread = new StreamRedirecter(serverHttp.getOutputStream(), proxyConnection.getInputStream(), call);
-                    StreamRedirecter serverHttpThread = new StreamRedirecter(proxyConnection.getOutputStream(), serverHttp.getInputStream(), call);
-
-                    proxyThread.start();
-                    serverHttpThread.start();
                 }
             }
             catch (Exception ex)
