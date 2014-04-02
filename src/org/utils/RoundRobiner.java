@@ -1,5 +1,7 @@
 package org.utils;
 
+import org.interfaces.ILoadBalancer;
+
 import java.io.IOException;
 import java.net.Socket;
 
@@ -10,7 +12,7 @@ import java.net.Socket;
  * Time: 09:22
  * To change this template use File | Settings | File Templates.
  */
-public class RoundRobiner {
+public class RoundRobiner implements ILoadBalancer{
 
     public static class HttpServerAddress {
         String adress;
@@ -30,9 +32,14 @@ public class RoundRobiner {
         this.servers = servers;
     }
 
-    public Socket getConnection() throws IOException {
+    public Socket getConnection() {
         int index = connectionCounter++ % servers.length;
 
-        return new Socket(servers[index].adress, servers[index].port);
+        try {
+            return new Socket(servers[index].adress, servers[index].port);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

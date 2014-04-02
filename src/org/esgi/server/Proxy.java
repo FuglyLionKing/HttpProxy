@@ -1,15 +1,20 @@
 package org.esgi.server;
 
+import org.esgi.config.ProxyConfig;
 import org.esgi.http.HTTPPrepender;
 import org.esgi.http.handlers.HttpRequestHandler;
 import org.esgi.http.handlers.ResponseHttpHandler;
+import org.factory.HostListFactory;
 import org.interfaces.MyCallBack;
+import org.utils.HostConfig;
 import org.utils.RoundRobiner;
 import org.utils.StreamRedirecter;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Proxy {
 
@@ -17,12 +22,15 @@ public class Proxy {
     RoundRobiner roundRobiner;
 
     public static void main(String args[]) {
-        new Proxy(2000, new RoundRobiner.HttpServerAddress("127.0.0.1", 1234) ).run();
+        //TODO parse json
+        ProxyConfig config = null;
+
+        new Proxy(2000, HostListFactory.get(config)).run();
     }
 
-    public Proxy(int port, RoundRobiner.HttpServerAddress... addresses) {
+    public Proxy(int port, Map<String, HostConfig> configs) {
 
-        roundRobiner = new RoundRobiner(addresses);
+        //roundRobiner = new RoundRobiner(addresses);
 
         try {
             serverProxy = new ServerSocket(port);

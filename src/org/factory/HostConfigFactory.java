@@ -12,7 +12,7 @@ import org.utils.HostConfig;
  */
 public class HostConfigFactory {
 
-    HostConfig get(ProxyConfig config)
+    public static HostConfig get(ProxyConfig config)
     {
         return null;
     }

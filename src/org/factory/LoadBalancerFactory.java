@@ -1,6 +1,7 @@
 package org.factory;
 
 import org.interfaces.ILoadBalancer;
+import org.utils.RoundRobiner;
 
 import java.util.List;
 
@@ -13,8 +14,25 @@ import java.util.List;
  */
 public class LoadBalancerFactory{
 
-    ILoadBalancer get(String method, List<String> workers)
+    public static  ILoadBalancer get(String method, List<String> workers)
     {
+
+        if("roundrobin".equals(method.toLowerCase())){
+            return getRoundRobiner(workers);
+        }
+
         return null;
+    }
+
+    private static RoundRobiner getRoundRobiner(List<String> workers){
+        RoundRobiner.HttpServerAddress[] adresses = new RoundRobiner.HttpServerAddress[workers.size()];
+
+        int i = 0;
+        for(String worker : workers){
+            String[] splitted = worker.split(":");
+            adresses[i++] = new RoundRobiner.HttpServerAddress(splitted[0], 1 < splitted.length ? new Integer(splitted[1]) : 80);
+        }
+
+        return new RoundRobiner(adresses);
     }
 }
