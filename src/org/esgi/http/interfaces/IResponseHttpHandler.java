@@ -5,7 +5,7 @@ import org.esgi.http.enums.HTTP_CODES;
 import java.io.OutputStream;
 import java.io.Writer;
 
-public interface IResponseHttpHandler {
+public interface IResponseHttpHandler extends HasHeaders{
 	
 	void flush();
 	Writer getWriter();

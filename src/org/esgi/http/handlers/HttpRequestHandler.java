@@ -132,7 +132,7 @@ public class HttpRequestHandler implements IRequestHttpHandler {
 
     @Override
     public String getHostname() {
-        return null;
+        return getHeader("Host");
     }
 
     @Override
@@ -161,6 +161,11 @@ public class HttpRequestHandler implements IRequestHttpHandler {
 
         builder.append("\r\n\r\n");
         return builder.toString();
+    }
+
+    @Override
+    public void addHeader(String key, String value) {
+        headers.put(key, value);
     }
 
     public void removeHeader(String key){
