@@ -3,8 +3,9 @@
     "host" : "mon-site.com:2000",
     "lb" : "roundrobin",
     "workers" : [
-        "leparisien.fr",
-        "transilien.com"
+        "jeuxvideo.fr",
+        "yahoo.fr",
+        "allocine.fr"
     ],
     "headers" : {
         "incoming": {

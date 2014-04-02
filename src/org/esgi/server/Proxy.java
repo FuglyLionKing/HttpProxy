@@ -25,7 +25,6 @@ public class Proxy {
 
     public Proxy(int port, Map<String, HostConfig> configs) {
 
-        //roundRobiner = new RoundRobiner(addresses);
         this.configs = configs;
 
         try {
@@ -47,41 +46,34 @@ public class Proxy {
                     System.out.println("Nouvelle connexion : " + clientConnection);
 
                     HttpRequestHandler request = HTTPPrepender.parseRequest(clientConnection.getInputStream(), clientConnection.getRemoteSocketAddress().toString());
-                    if(null == request){
-                        continue;
-                    }
-
-//                    System.out.println(request.asString());
-//                    System.out.println("**********************");
-
-                    //TODO add/remove headers depending on config
 
                     String host = request.getHostname();
                     HostConfig config = configs.get(host);
-                    if(null == config)
-                        //TODO see through proxy
-                        return;
 
-                    //HTTP server socket
-                    Socket serverHttp = config.loadBalancer.getConnection();//new Socket("127.0.0.1", 1234);
+                    //We don't handle this host, 404
+                    if(null == config){
+                        ResponseHttpHandler fourOfour = new ResponseHttpHandler(clientConnection.getOutputStream());
+                        fourOfour.setVersion("HTTP/1.1");
+                        fourOfour.setHttpCode("404 Not Found");
+                        fourOfour.addHeader("Content-Type", "text/html");
 
-                    config.incomingModifier.modify((HasHeader) request);
+                        fourOfour.getWriter().write("<body>404</body>");
+                        fourOfour.flush();
+                        continue;
+                    }
+
+                    Socket serverHttp = config.loadBalancer.getConnection();
+
+                    config.incomingModifier.modify(request);
                     serverHttp.getOutputStream().write(request.asString().getBytes());
+                    serverHttp.getOutputStream().flush();
 
                     ResponseHttpHandler response = HTTPPrepender.parseResponse(serverHttp.getInputStream(), clientConnection.getOutputStream());
-                    config.outgoingModifier.modify((HasHeader)response);
+                    config.outgoingModifier.modify(response);
 
-
-
-
-                    System.out.println("---------ProxResponse----------");
                     response.getWriter().write(new char[0]);
                     response.getOutputStream().write(response.getContent());
                     response.getWriter().flush();
-                    System.out.println("-------------------------------");
-
-
-                    //TODO add.remove headers
 
                 } catch (Exception e) {
                     e.printStackTrace();

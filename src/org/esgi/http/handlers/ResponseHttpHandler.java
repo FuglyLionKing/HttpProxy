@@ -1,6 +1,5 @@
 package org.esgi.http.handlers;
 
-import org.esgi.http.enums.HTTP_CODES;
 import org.esgi.http.interfaces.IResponseHttpHandler;
 
 import java.io.IOException;
@@ -18,20 +17,14 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class ResponseHttpHandler implements IResponseHttpHandler {
-    private String code;
-
-
     private AutoHeaderWriter writer;
-    private OutputStream stream;
 
+    private String code;
+    private OutputStream stream;
+    private String version;
 
     private HashMap<String, String> headers = new HashMap<String, String>();
-
-
-    private String contentType;
-
     private byte[]  content;
-    private String version;
 
 
     public ResponseHttpHandler(OutputStream stream) {
@@ -63,11 +56,6 @@ public class ResponseHttpHandler implements IResponseHttpHandler {
     }
 
     @Override
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
-    @Override
     public void addCookie(String name, String value, int duration, String path) {
         StringBuilder formattedValue = new StringBuilder();
         formattedValue.append(String.format("%s=%s", name,value));
@@ -86,11 +74,6 @@ public class ResponseHttpHandler implements IResponseHttpHandler {
     @Override
     public void setErrorCode() {
         setHttpCode("404 Not Found");
-    }
-
-    @Override
-    public void setContentLength(int lenght) {
-        //this.length = lenght;
     }
 
     public byte[]  getContent() {
@@ -142,15 +125,15 @@ public class ResponseHttpHandler implements IResponseHttpHandler {
             hasWrite = true;
             super.write(String.format("%s %s\r\n", version, code));
 
-            System.out.print(String.format("%s %s\r\n", version, code));
+//            System.out.print(String.format("%s %s\r\n", version, code));
 
             for (Map.Entry<String, String> header : headers.entrySet()) {
                 super.write(String.format("%s: %s\r\n", header.getKey(), header.getValue()));
-                System.out.print(String.format("%s: %s\r\n", header.getKey(), header.getValue()));
+//                System.out.print(String.format("%s: %s\r\n", header.getKey(), header.getValue()));
             }
 
             write("\r\n");
-            System.out.print("\r\n");
+//            System.out.print("\r\n");
 
             flush();
         }
