@@ -6,6 +6,7 @@ import org.esgi.http.interfaces.IRequestHttpHandler;
 import org.esgi.http.keepers.Cookie;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -148,4 +149,18 @@ public class HttpRequestHandler implements IRequestHttpHandler {
     public String getPort() {
         return null;
     }
+
+    public String asString(){
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(String.format("%s %s %s\r\n", method.name(),uri,version));
+
+        for(Map.Entry<String, String> entry : headers.entrySet()){
+            builder.append(String.format("%s: %s\r\n", entry.getKey(), entry.getValue()));
+        }
+
+        builder.append("\r\n\r\n");
+        return builder.toString();
+    }
+
 }

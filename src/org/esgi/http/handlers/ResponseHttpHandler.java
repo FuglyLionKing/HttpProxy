@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,14 +18,21 @@ import java.io.Writer;
  * To change this template use File | Settings | File Templates.
  */
 public class ResponseHttpHandler implements IResponseHttpHandler {
-    private HTTP_CODES code;
+    private String code;
 
 
     private AutoHeaderWriter writer;
     private OutputStream stream;
-    private StringBuilder header = new StringBuilder();
-    private int length;
+
+
+    private HashMap<String, String> headers = new HashMap<String, String>();
+
+
     private String contentType;
+
+    private String content;
+    private String version;
+
 
     public ResponseHttpHandler(OutputStream stream) {
         this.writer = new AutoHeaderWriter(this.stream = stream);
@@ -50,7 +59,7 @@ public class ResponseHttpHandler implements IResponseHttpHandler {
 
     @Override
     public void addHeader(String key, String value) {
-        header.append(String.format("%s: %s\r\n", key, value));
+        headers.put(key, value);
     }
 
     @Override
@@ -70,20 +79,35 @@ public class ResponseHttpHandler implements IResponseHttpHandler {
     }
 
     @Override
-    public void setHttpCode(HTTP_CODES code) {
+    public void setHttpCode(String code) {
         this.code = code;
     }
 
     @Override
     public void setErrorCode() {
-        setHttpCode(HTTP_CODES.NOT_FOUND);
+        setHttpCode("404 Not Found");
     }
 
     @Override
     public void setContentLength(int lenght) {
-        this.length = lenght;
+        //this.length = lenght;
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
     //
     //
@@ -112,12 +136,19 @@ public class ResponseHttpHandler implements IResponseHttpHandler {
                 return;
 
             hasWrite = true;
-            super.write(String.format("HTTP/1.1 %s\r\n" +
-                    "Content-Type: %s\r\n" +
-                    "Content-Length: %d\r\n", code.toString(), contentType, length));
+            super.write(String.format("%s %s\r\n", version, code));
 
-            super.write(header.toString());
-            super.write("\r\n");
+            System.out.print(String.format("%s %s\r\n", version, code));
+
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                super.write(String.format("%s: %s\r\n", header.getKey(), header.getValue()));
+                System.out.print(String.format("%s: %s\r\n", header.getKey(), header.getValue()));
+            }
+
+            write("\r\n");
+            System.out.print("\r\n");
+
+            flush();
         }
 
         @Override
@@ -147,6 +178,7 @@ public class ResponseHttpHandler implements IResponseHttpHandler {
         @Override
         public void write(String str) throws IOException {
             writeHeader();
+            System.out.print(str);
             super.write(str);    //To change body of overridden methods use File | Settings | File Templates.
         }
 
