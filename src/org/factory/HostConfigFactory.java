@@ -1,6 +1,6 @@
 package org.factory;
 
-import org.esgi.config.ProxyConfig;
+import org.esgi.config.Host;
 import org.utils.HostConfig;
 
 /**
@@ -12,9 +12,11 @@ import org.utils.HostConfig;
  */
 public class HostConfigFactory
 {
-
-    public static HostConfig get(ProxyConfig config)
+    public static HostConfig get(Host host)
     {
-        return null;
+        String h = host.host;
+        HostConfig hc = new HostConfig();
+
+        return hc;
     }
 }

@@ -1,5 +1,6 @@
 package org.factory;
 
+import org.esgi.config.Host;
 import org.esgi.config.ProxyConfig;
 import org.utils.HostConfig;
 
@@ -19,13 +20,11 @@ public class HostListFactory
     public static Map<String, HostConfig> get(ProxyConfig config)
     {
         System.out.println(config.toString());
-
         configMap = new HashMap<String, HostConfig>();
-        HostConfig hostConfig = new HostConfig();
 
-
-
-        configMap.put("config", hostConfig);
+        for(Host h : config.hosts){
+            configMap.put(h.host, HostConfigFactory.get(h));
+        }
         return configMap;
     }
 }

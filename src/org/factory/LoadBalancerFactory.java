@@ -16,7 +16,6 @@ public class LoadBalancerFactory{
 
     public static  ILoadBalancer get(String method, List<String> workers)
     {
-
         if("roundrobin".equals(method.toLowerCase())){
             return getRoundRobiner(workers);
         }
