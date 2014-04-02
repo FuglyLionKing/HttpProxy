@@ -17,7 +17,7 @@ public class HostConfigFactory
        HostConfig hc = new HostConfig();
        hc.loadBalancer = LoadBalancerFactory.get(host.lb, host.workers);
        hc.incomingModifier = HeaderModifierFactory.get(host.headers.incoming);
-       hc.incomingModifier = HeaderModifierFactory.get(host.headers.outgoing);
+       hc.outgoingModifier = HeaderModifierFactory.get(host.headers.outgoing);
        return hc;
     }
 }

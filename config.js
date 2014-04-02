@@ -3,8 +3,8 @@
     "host" : "mon-site.com:2000",
     "lb" : "roundrobin",
     "workers" : [
-        "10.66.1.2",
-        "10.66.1.3:45678"
+        "leparisien.fr",
+        "transilien.com"
     ],
     "headers" : {
         "incoming": {
