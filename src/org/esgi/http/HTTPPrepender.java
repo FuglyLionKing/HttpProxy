@@ -102,29 +102,6 @@ public class HTTPPrepender {
         return new String(unbox(bytes));
     }
 
-
-//    private static String Request(InputStream stream) throws IOException {
-//        StringBuilder builder = new StringBuilder();
-//        InputStreamReader reader = new InputStreamReader(stream);
-//        int bufferSize = 1024;
-//        char[] buffer = new char[bufferSize];
-//        String requestEnd = "\r\n\r\n";
-//
-//        int b;
-//        while (0 < (b = reader.read(buffer))) {
-//            builder.append(buffer, 0, b);
-//            String bufferEnd = builder.substring(builder.length() - 4, builder.length());
-//            if (requestEnd.equals(bufferEnd))
-//                break;
-//        }
-//
-//        System.out.println("*********Received********");
-//        System.out.println(builder.toString());
-//        System.out.println("**** End of received *****");
-//
-//        return builder.toString();
-//    }
-
     public static HttpRequestHandler parseRequest(InputStream stream, String remoteAdr) throws IOException {
 
         String header = readHeader(stream, "\r\n\r\n");

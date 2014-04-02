@@ -5,8 +5,8 @@ import org.esgi.http.HTTPPrepender;
 import org.esgi.http.handlers.HttpRequestHandler;
 import org.esgi.http.handlers.ResponseHttpHandler;
 import org.factory.HostListFactory;
+import org.interfaces.HasHeader;
 import org.utils.HostConfig;
-import org.utils.RoundRobiner;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -20,13 +20,15 @@ public class Proxy {
 
     public static void main(String args[]) {
         //TODO parse json
-        ProxyConfig config = new ProxyConfig();
-        new Proxy(2000, HostListFactory.get(config.getParseConfigFile())).run();
+        ProxyConfig config = null;
+
+        new Proxy(2000, HostListFactory.getDumy("mon-site.com:2000", "127.0.0.1", 1234)).run();
     }
 
     public Proxy(int port, Map<String, HostConfig> configs) {
 
         //roundRobiner = new RoundRobiner(addresses);
+        this.configs = configs;
 
         try {
             serverProxy = new ServerSocket(port);
@@ -65,10 +67,11 @@ public class Proxy {
                     //HTTP server socket
                     Socket serverHttp = config.loadBalancer.getConnection();//new Socket("127.0.0.1", 1234);
 
-
+                    config.incomingModifier.modify((HasHeader)request);
                     serverHttp.getOutputStream().write(request.asString().getBytes());
 
                     ResponseHttpHandler response = HTTPPrepender.parseResponse(serverHttp.getInputStream(), clientConnection.getOutputStream());
+                    config.outgoingModifier.modify((HasHeader)response);
 
 
 

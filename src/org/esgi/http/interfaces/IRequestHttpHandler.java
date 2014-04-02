@@ -1,8 +1,9 @@
 package org.esgi.http.interfaces;
 
 import org.esgi.http.enums.HTTP_METHOD;
+import org.interfaces.HasHeader;
 
-public interface IRequestHttpHandler extends HasHeaders{
+public interface IRequestHttpHandler extends HasHeader {
 	
 	/*
 	 * Return HttpParametersName (GET or POST)
