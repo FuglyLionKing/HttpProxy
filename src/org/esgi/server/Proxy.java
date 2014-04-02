@@ -5,15 +5,12 @@ import org.esgi.http.HTTPPrepender;
 import org.esgi.http.handlers.HttpRequestHandler;
 import org.esgi.http.handlers.ResponseHttpHandler;
 import org.factory.HostListFactory;
-import org.interfaces.MyCallBack;
 import org.utils.HostConfig;
 import org.utils.RoundRobiner;
-import org.utils.StreamRedirecter;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.Map;
 
 public class Proxy {
@@ -23,9 +20,8 @@ public class Proxy {
 
     public static void main(String args[]) {
         //TODO parse json
-        ProxyConfig config = null;
-
-        new Proxy(2000, HostListFactory.get(config)).run();
+        ProxyConfig config = new ProxyConfig();
+        new Proxy(2000, HostListFactory.get(config.getParseConfigFile())).run();
     }
 
     public Proxy(int port, Map<String, HostConfig> configs) {

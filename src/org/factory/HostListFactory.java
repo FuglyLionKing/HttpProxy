@@ -3,6 +3,7 @@ package org.factory;
 import org.esgi.config.ProxyConfig;
 import org.utils.HostConfig;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -14,8 +15,17 @@ import java.util.Map;
  */
 public class HostListFactory
 {
-    public static  Map<String, HostConfig> get(ProxyConfig config)
+    private static HashMap<String, HostConfig> configMap;
+    public static Map<String, HostConfig> get(ProxyConfig config)
     {
-        return null;
+        System.out.println(config.toString());
+
+        configMap = new HashMap<String, HostConfig>();
+        HostConfig hostConfig = new HostConfig();
+
+
+
+        configMap.put("config", hostConfig);
+        return configMap;
     }
 }
