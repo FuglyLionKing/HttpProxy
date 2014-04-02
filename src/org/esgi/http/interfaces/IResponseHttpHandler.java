@@ -1,11 +1,11 @@
 package org.esgi.http.interfaces;
 
-import org.esgi.http.enums.HTTP_CODES;
+import org.interfaces.HasHeader;
 
 import java.io.OutputStream;
 import java.io.Writer;
 
-public interface IResponseHttpHandler extends HasHeaders{
+public interface IResponseHttpHandler extends HasHeader {
 	
 	void flush();
 	Writer getWriter();
