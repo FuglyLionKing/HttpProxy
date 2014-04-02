@@ -13,7 +13,7 @@ import java.util.HashMap;
  */
 public class HeaderModifierFactory {
 
-    IHeaderModifier get(HashMap<String, String> add, HashMap<String, String> remove)
+    public static IHeaderModifier get(HashMap<String, String> add, HashMap<String, String> remove)
     {
         return null;
     }

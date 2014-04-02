@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class HostListFactory
 {
-    public Map<String, HostConfig> get(ProxyConfig config)
+    public static  Map<String, HostConfig> get(ProxyConfig config)
     {
         return null;
     }
