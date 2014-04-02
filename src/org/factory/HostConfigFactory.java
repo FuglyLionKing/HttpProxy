@@ -10,7 +10,8 @@ import org.utils.HostConfig;
  * Time: 15:07
  * To change this template use File | Settings | File Templates.
  */
-public class HostConfigFactory {
+public class HostConfigFactory
+{
 
     HostConfig get(ProxyConfig config)
     {

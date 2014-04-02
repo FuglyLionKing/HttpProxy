@@ -10,7 +10,8 @@ import org.interfaces.ILoadBalancer;
  * Time: 15:00
  * To change this template use File | Settings | File Templates.
  */
-public class HostConfig{
+public class HostConfig
+{
     public ILoadBalancer loadBalancer;
     public IHeaderModifier incomingModifier;
     public IHeaderModifier outgoingModifier;

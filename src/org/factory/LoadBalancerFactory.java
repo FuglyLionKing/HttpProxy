@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class LoadBalancerFactory{
 
-    ILoadBalancer get(String method, List<String> workers)
+    public ILoadBalancer get(String method, List<String> workers)
     {
         return null;
     }
