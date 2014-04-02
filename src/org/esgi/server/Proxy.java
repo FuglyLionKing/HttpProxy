@@ -1,9 +1,10 @@
 package org.esgi.server;
 
-import org.interfaces.MyCallBack;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.esgi.config.ProxyConfig;
 import org.utils.RoundRobiner;
-import org.utils.StreamRedirecter;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -38,6 +39,10 @@ public class Proxy {
                 {
                     final Socket proxyConnection = serverProxy.accept();
                     System.out.println("Nouvelle connexion : "+proxyConnection);
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    ProxyConfig conf = new ProxyConfig();
+                    conf = objectMapper.readValue(new File("config.js"), ProxyConfig.class);
+                    System.out.println(conf.toString());
 
                     //HTTP server socket
                     final Socket serverHttp = roundRobiner.getConnection();//new Socket("127.0.0.1", 1234);
