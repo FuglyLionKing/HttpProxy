@@ -19,26 +19,41 @@ public interface IVirtualHost
 
     //lb
     String getRepartitionMethod();
-    void setRepartitionMethod();
+    void setRepartitionMethod(String method);
 
     //workers
     String[] getWorker();
 
     //headers
-    String[] getHeaders();
+    Object[] getHeaders();
 
     //incoming
-    String getIncoming();
-    void setIncoming(String incoming);
+    Object[] getIncoming();
 
-    //Add (incoming)
-    String getAddIncoming();
-    void setAddIncoming(String add);
+    //add (incoming)
+    Object[] getAddIncoming();
+
+    //remove (incoming)
+    Object[] getRemoveIncoming();
+
+    //incoming add header
+    String getIncomingAddHeader();
+
+    //incoming remove header
+    String getIncomingRemoveHeader();
 
     //outcoming
-    String getOutcoming();
-    void setOutcoming(String outcoming);
+    Object[] getOutcoming();
 
-    String getOutcomingAdd();
-    void setOutcomingAdd(String add);
+    //add (outcoming)
+    Object[] getOutcomingAdd();
+
+    //remove (outcoming)
+    Object[] getOutcomingRemove();
+
+    //outcoming add header
+    String getOutcomingAddHeader();
+
+    //outcoming remove header
+    String getOutcomingRemoveHeader();
 }
