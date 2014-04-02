@@ -19,7 +19,7 @@ import java.util.Map;
 public class Proxy {
 
     ServerSocket serverProxy = null;
-    RoundRobiner roundRobiner;
+    Map<String, HostConfig> configs;
 
     public static void main(String args[]) {
         //TODO parse json
@@ -60,16 +60,22 @@ public class Proxy {
 
                     //TODO add/remove headers depending on config
 
+                    String host = request.getHostname();
+                    HostConfig config = configs.get(host);
+                    if(null == config)
+                        //TODO see through proxy
+                        return;
+
                     //HTTP server socket
-                    Socket serverHttp = roundRobiner.getConnection();//new Socket("127.0.0.1", 1234);
+                    Socket serverHttp = config.loadBalancer.getConnection();//new Socket("127.0.0.1", 1234);
 
 
                     serverHttp.getOutputStream().write(request.asString().getBytes());
 
                     ResponseHttpHandler response = HTTPPrepender.parseResponse(serverHttp.getInputStream(), clientConnection.getOutputStream());
 
-                    response.removeHeader("Content-Description");
-                    response.removeHeader("Content-Disposition");
+
+
 
                     System.out.println("---------ProxResponse----------");
                     response.getWriter().write(new char[0]);
